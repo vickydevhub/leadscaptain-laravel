@@ -36,7 +36,21 @@ final class FetchLeadPageJob implements ShouldQueue
     public function __construct(
         public readonly int $page,
         public readonly int $perPage,
-    ) {}
+    ) {
+        $this->onConnection(
+            (string) config(
+                'leadscaptain.queue.connection',
+                'redis',
+            ),
+        );
+
+        $this->onQueue(
+            (string) config(
+                'leadscaptain.queue.queue',
+                'leadscaptain',
+            ),
+        );
+    }
 
     public function handle(
         LeadscaptainClient $client,

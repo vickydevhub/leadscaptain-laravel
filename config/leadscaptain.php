@@ -44,4 +44,20 @@ return [
         1000,
     ),
 
+    'queue' => [
+        'connection' => env(
+            'LEADSCAPTAIN_QUEUE_CONNECTION',
+            'redis',
+        ),
+
+        'queue' => env(
+            'LEADSCAPTAIN_QUEUE',
+            'leadscaptain',
+        ),
+
+        'concurrency' => (int) env(
+            'LEADSCAPTAIN_CONCURRENCY',
+            10,
+        ),
+    ],
 ];

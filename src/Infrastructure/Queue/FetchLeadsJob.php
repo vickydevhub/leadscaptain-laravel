@@ -23,6 +23,23 @@ final class FetchLeadsJob implements ShouldQueue
 
     public int $tries = 3;
 
+    public function __construct()
+    {
+        $this->onConnection(
+            (string) config(
+                'leadscaptain.queue.connection',
+                'redis',
+            ),
+        );
+
+        $this->onQueue(
+            (string) config(
+                'leadscaptain.queue.queue',
+                'leadscaptain',
+            ),
+        );
+    }
+
     public function handle(
         LeadscaptainClient $client,
         ImportLeads $importLeads,
