@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Leadscaptain\LaravelLeadscaptain;
 
 use Illuminate\Support\ServiceProvider;
+use Leadscaptain\LaravelLeadscaptain\Console\Commands\ImportLeadsCommand;
 use Leadscaptain\LaravelLeadscaptain\Domain\Repositories\LeadRepository;
 use Leadscaptain\LaravelLeadscaptain\Infrastructure\Http\LeadscaptainClient;
 use Leadscaptain\LaravelLeadscaptain\Infrastructure\Persistence\Repositories\EloquentLeadRepository;
@@ -47,5 +48,11 @@ final class LeadscaptainServiceProvider extends ServiceProvider
                 'days' => 14,
             ],
         );
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                ImportLeadsCommand::class,
+            ]);
+        }
     }
 }
