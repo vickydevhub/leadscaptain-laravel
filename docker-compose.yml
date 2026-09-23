@@ -1,0 +1,51 @@
+services:
+
+  app:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    container_name: leadscaptain_app
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+    user: root
+    environment:
+      COMPOSER_PROCESS_TIMEOUT: 1200
+      DB_HOST: mysql
+      REDIS_HOST: redis
+    command: tail -f /dev/null
+
+  mysql:
+    image: mysql:8.4
+    container_name: leadscaptain_mysql
+    environment:
+      MYSQL_DATABASE: leadscaptain
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: leadscaptain
+      MYSQL_PASSWORD: secret
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost",
+          "-proot"
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: leadscaptain_redis
+    ports:
+      - "6380:6379"
+
+volumes:
+  mysql_data:

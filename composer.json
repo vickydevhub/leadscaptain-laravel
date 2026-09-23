@@ -1,0 +1,43 @@
+{
+    "name": "leadscaptain/laravel-leadscaptain",
+    "description": "Laravel package for integrating with the Leadscaptain API.",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": "^8.4",
+        "illuminate/console": "^12.0",
+        "illuminate/contracts": "^12.0",
+        "illuminate/database": "^12.0",
+        "illuminate/http": "^12.0",
+        "illuminate/queue": "^12.0",
+        "illuminate/support": "^12.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^10.0",
+        "phpunit/phpunit": "^11.0",
+        "laravel/pint": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Leadscaptain\\LaravelLeadscaptain\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Leadscaptain\\LaravelLeadscaptain\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Leadscaptain\\LaravelLeadscaptain\\LeadscaptainServiceProvider"
+            ]
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "lint": "vendor/bin/pint --test"
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
