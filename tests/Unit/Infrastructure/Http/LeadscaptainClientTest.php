@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Leadscaptain\LaravelLeadscaptain\Tests\Unit\Infrastructure\Http;
 
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 use Leadscaptain\LaravelLeadscaptain\Infrastructure\Http\LeadscaptainClient;
 use Orchestra\Testbench\TestCase;
@@ -132,7 +133,7 @@ final class LeadscaptainClientTest extends TestCase
 
         $client = app(LeadscaptainClient::class);
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RequestException::class);
 
         $client->fetchPage(1, 100);
     }

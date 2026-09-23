@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Leadscaptain\LaravelLeadscaptain\Infrastructure\Http;
 
-use Exception;
-use Illuminate\Http\Client\Response;
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use RuntimeException;
+use Throwable;
 
 final class LeadscaptainClient
 {
@@ -39,8 +41,24 @@ final class LeadscaptainClient
             ->retry(
                 (int) config('leadscaptain.retry_times'),
                 $this->retryDelay(...),
-                $this->shouldRetry(...),
-                throw: false,
+                function (
+                    Throwable $exception,
+                    PendingRequest $request,
+                    ?string $response,
+                ): bool {
+                    if ($exception instanceof ConnectionException) {
+                        return true;
+                    }
+
+                    if ($exception instanceof RequestException) {
+                        $status = $exception->response->status();
+
+                        return $status === 429
+                            || $status >= 500;
+                    }
+
+                    return false;
+                },
             )
             ->get('/leads', [
                 'page' => $page,
@@ -78,17 +96,6 @@ final class LeadscaptainClient
         $this->validateResponse($payload);
 
         return $payload;
-    }
-
-    private function shouldRetry(
-        Exception|Response $response,
-    ): bool {
-        if ($response instanceof Response) {
-            return $response->status() === 429
-                || $response->serverError();
-        }
-
-        return true;
     }
 
     private function retryDelay(int $attempt): int
