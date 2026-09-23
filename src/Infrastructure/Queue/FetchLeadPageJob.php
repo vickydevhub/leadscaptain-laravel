@@ -10,7 +10,10 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Log;
 use Leadscaptain\LaravelLeadscaptain\Application\Services\ImportLeads;
+use Leadscaptain\LaravelLeadscaptain\Domain\Events\LeadImportFailed;
 use Leadscaptain\LaravelLeadscaptain\Infrastructure\Http\LeadscaptainClient;
 use Throwable;
 
@@ -72,12 +75,19 @@ final class FetchLeadPageJob implements ShouldQueue
 
     public function failed(Throwable $exception): void
     {
-        logger()->error(
-            'Leadscaptain page import failed.',
+        Log::channel('leadscaptain')->error(
+            'Leadscaptain page import permanently failed.',
             [
                 'page' => $this->page,
                 'message' => $exception->getMessage(),
             ],
+        );
+
+        Event::dispatch(
+            new LeadImportFailed(
+                page: $this->page,
+                exception: $exception,
+            ),
         );
     }
 }
