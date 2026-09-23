@@ -23,6 +23,12 @@ return [
         3,
     ),
 
+    'retry_backoff' => [
+        1000,
+        5000,
+        30000,
+    ],
+
     'per_page' => (int) env(
         'LEADSCAPTAIN_PER_PAGE',
         100,
@@ -31,6 +37,11 @@ return [
     'concurrency' => (int) env(
         'LEADSCAPTAIN_CONCURRENCY',
         10,
+    ),
+
+    'max_page' => (int) env(
+        'LEADSCAPTAIN_MAX_PAGE',
+        1000,
     ),
 
 ];
